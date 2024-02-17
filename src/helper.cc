@@ -204,7 +204,7 @@ string Helper::run_program(const string& prefix_path,
 
   string debug = (debug_log_level != 1) ? "WINEDEBUG=" + Helper::log_level_to_winedebug_string(debug_log_level) + " " : "";
   string exec_program = (stderr_output) ? program + " 2>&1" : program;
-  string command = additional_environment_variables.value_or(std::string()) + debug + "WINEPREFIX=\"" + prefix_path + "\" " + exec_program;
+  string command = additional_environment_variables.value_or(std::string()) + ' ' + debug + "WINEPREFIX=\"" + prefix_path + "\" " + exec_program;
   if (give_error)
   {
     // Execute the command that also shows an error message to the user when exit code is non-zero
