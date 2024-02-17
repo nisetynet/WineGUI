@@ -193,13 +193,18 @@ std::vector<std::string> Helper::get_bottles_paths(const string& dir_path, bool 
  * \param[in] stderr_output Also output stderr (together with stout)
  * \return Terminal stdout output
  */
-string Helper::run_program(const string& prefix_path, int debug_log_level, const string& program, bool give_error, bool stderr_output)
+string Helper::run_program(const string& prefix_path,
+                           int debug_log_level,
+                           const string& program,
+                           bool give_error,
+                           bool stderr_output,
+                           const std::optional<const string>& additional_environment_variables)
 {
   string output;
 
   string debug = (debug_log_level != 1) ? "WINEDEBUG=" + Helper::log_level_to_winedebug_string(debug_log_level) + " " : "";
   string exec_program = (stderr_output) ? program + " 2>&1" : program;
-  string command = debug + "WINEPREFIX=\"" + prefix_path + "\" " + exec_program;
+  string command = additional_environment_variables.value_or(std::string()) + debug + "WINEPREFIX=\"" + prefix_path + "\" " + exec_program;
   if (give_error)
   {
     // Execute the command that also shows an error message to the user when exit code is non-zero
@@ -223,12 +228,19 @@ string Helper::run_program(const string& prefix_path, int debug_log_level, const
  * brackets in case of spaces)
  * \param[in] give_error Inform user when application exit with non-zero exit code
  * \param[in] stderr_output Also output stderr (together with stout)
+ * \param[in] additional_environment_variables Optional environment variables
  * \return Terminal stdout output
  */
-string Helper::run_program_under_wine(
-    bool wine_64_bit, const string& prefix_path, int debug_log_level, const string& program, bool give_error, bool stderr_output)
+string Helper::run_program_under_wine(bool wine_64_bit,
+                                      const string& prefix_path,
+                                      int debug_log_level,
+                                      const string& program,
+                                      bool give_error,
+                                      bool stderr_output,
+                                      const std::optional<const string>& additional_environment_variables)
 {
-  return run_program(prefix_path, debug_log_level, Helper::get_wine_executable_location(wine_64_bit) + " " + program, give_error, stderr_output);
+  return run_program(prefix_path, debug_log_level, Helper::get_wine_executable_location(wine_64_bit) + " " + program, give_error, stderr_output,
+                     additional_environment_variables);
 }
 
 /**

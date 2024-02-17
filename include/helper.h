@@ -21,6 +21,7 @@
 #pragma once
 
 #include <glibmm/dispatcher.h>
+#include <optional>
 #include <string>
 #include <utility>
 #include <vector>
@@ -45,9 +46,19 @@ public:
   static Helper& get_instance();
 
   static std::vector<string> get_bottles_paths(const string& dir_path, bool display_default_wine_machine);
-  static string run_program(const string& prefix_path, int debug_log_level, const string& program, bool give_error = true, bool stderr_output = true);
-  static string run_program_under_wine(
-      bool wine_64_bit, const string& prefix_path, int debug_log_level, const string& program, bool give_error = true, bool stderr_output = true);
+  static string run_program(const string& prefix_path,
+                            int debug_log_level,
+                            const string& program,
+                            bool give_error = true,
+                            bool stderr_output = true,
+                            const std::optional<const string>& additional_environment_variables = std::nullopt);
+  static string run_program_under_wine(bool wine_64_bit,
+                                       const string& prefix_path,
+                                       int debug_log_level,
+                                       const string& program,
+                                       bool give_error = true,
+                                       bool stderr_output = true,
+                                       const std::optional<const string>& additional_environment_variables = std::nullopt);
   static void write_to_log_file(const string& logging_bottle_prefix, const string& logging);
   static string get_log_file_path(const string& logging_bottle_prefix);
   static void wait_until_wineserver_is_terminated(const string& prefix_path);
